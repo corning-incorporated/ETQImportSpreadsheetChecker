@@ -1,0 +1,40 @@
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.frmListValues.resources
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.frmMain.resources
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.frmReplace.resources
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.Resources.resources
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.vbproj.GenerateResource.cache
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.vbproj.CoreCompileInputs.cache
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.xml
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.exe.config
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.exe.manifest
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.application
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.exe
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.pdb
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.xml
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.exe.manifest
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.application
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.exe
+\\na.corning.com\erej-ud$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.pdb
+\\na.corning.com\EREJ-UD$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.vbproj.AssemblyReference.cache
+\\na.corning.com\EREJ-UD$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.frmBusinessProperties.resources
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.exe.config
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.exe.manifest
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.application
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.exe
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.pdb
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\ImportSpreadsheetChecker.xml
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.frmBusinessProperties.resources
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.frmListValues.resources
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.frmMain.resources
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.frmReplace.resources
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.Resources.resources
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.vbproj.GenerateResource.cache
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.vbproj.CoreCompileInputs.cache
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.exe.manifest
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.application
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.exe
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.xml
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.pdb
+D:\My Documents\Visual Studio Project Backups\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.vbprojAssemblyReference.cache
+\\na.corning.com\EREJ-UD$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\bin\Debug\WinSCPnet.dll
+\\na.corning.com\EREJ-UD$\UD3\geetc\My Documents\Visual Studio 2017\Projects\ImportSpreadsheetChecker\ImportSpreadsheetChecker\obj\Debug\ImportSpreadsheetChecker.vbproj.CopyComplete

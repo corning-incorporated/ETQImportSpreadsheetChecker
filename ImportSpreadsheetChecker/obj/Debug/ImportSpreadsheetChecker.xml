@@ -1,0 +1,116 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+ImportSpreadsheetChecker
+</name>
+</assembly>
+<members>
+<member name="T:ImportSpreadsheetChecker.My.Resources.Resources">
+<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+<member name="P:ImportSpreadsheetChecker.My.Resources.Resources.ResourceManager">
+<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member>
+<member name="P:ImportSpreadsheetChecker.My.Resources.Resources.Culture">
+<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member>
+<member name="P:ImportSpreadsheetChecker.My.Resources.Resources.Show24">
+<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member>
+<member name="M:ImportSpreadsheetChecker.BusinessCollection.LoadBusinesses(System.Collections.ArrayList)">
+ <summary>
+ This method will parse through the list of business definitions and add them as objects to the "Businesses" ArrayList
+ </summary>
+ <param name="buses"></param>
+</member>
+<member name="P:ImportSpreadsheetChecker.clsDatabaseCalls.ConnectionString">
+ <summary>
+ Gets/Sets the SQL Connection String, which is stored as a private variable
+ </summary>
+ <returns>SQL Connection String</returns>
+ <remarks>Copyright © 2020 by Corning, Inc.</remarks>
+</member>
+<member name="M:ImportSpreadsheetChecker.clsDatabaseCalls.SetConnectionString">
+ <summary>
+ Setup the SQL Server Connection object for either the Proficy or Exact MAX database
+ </summary>
+ <remarks>Copyright © 2020 by Corning, Inc.</remarks>
+</member>
+<member name="M:ImportSpreadsheetChecker.clsDatabaseCalls.SetSqlCommand(System.String,System.Boolean)">
+ <summary>
+ Set the SQL Command that will be executed
+ </summary>
+ <param name="SQLCommand"></param>
+ <param name="StoredProcedure"></param>
+ <remarks>Copyright © 2020 - Corning, Inc.</remarks>
+</member>
+<member name="M:ImportSpreadsheetChecker.clsDatabaseCalls.CloseDatabaseConnection">
+ <summary>
+ This method closes the database connection and disposes of all related objects
+ </summary>
+ <remarks>Copyright © 2016 by Corning, Inc.</remarks>
+</member>
+<member name="M:ImportSpreadsheetChecker.EnvironmentCollection.LoadEnvironments(System.Collections.ArrayList)">
+ <summary>
+ This method will parse through the list of environment definitions and add them as objects to the "Environments" ArrayList
+ </summary>
+ <param name="envs"></param>
+</member>
+<member name="M:ImportSpreadsheetChecker.frmMain.GetUniqueNumbers">
+ <summary>
+ This method populates a hashtable with all ETQ$NUMBER values in the related schema/table
+ </summary>
+</member>
+<member name="M:ImportSpreadsheetChecker.frmMain.GetColumnType(System.String)">
+ <summary>
+ 
+ </summary>
+ <param name="ColumnName"></param>
+ <returns>Column type in UPPERCASE</returns>
+</member>
+<member name="M:ImportSpreadsheetChecker.frmMain.ReplaceColumnValues(System.String,System.String,System.String)">
+ <summary>
+ Iterate through all rows in the selected column and find/replace related values
+ </summary>
+ <param name="ColumnName"></param>
+ <param name="FindWhat"></param>
+ <param name="ReplaceWith"></param>
+</member>
+<member name="M:ImportSpreadsheetChecker.frmMain.ReplaceAll(System.String,System.String)">
+ <summary>
+ Look through the entire data grid and find/replace related values
+ 
+ Note: The dgvData.DataError event handler suppresses data-type mismatches
+ </summary>
+ <param name="FindWhat"></param>
+ <param name="ReplaceWith"></param>
+</member>
+<member name="M:ImportSpreadsheetChecker.frmMain.ReplaceWithStringComparison(System.String,System.String,System.String,System.StringComparison)">
+ <summary>
+ Replaces the portion of the selected string with the new value
+ </summary>
+ <param name="input"></param>
+ <param name="search"></param>
+ <param name="replace"></param>
+ <param name="comparison"></param>
+ <returns></returns>
+</member>
+<member name="M:ImportSpreadsheetChecker.frmMain.dgvData_DataError(System.Object,System.Windows.Forms.DataGridViewDataErrorEventArgs)">
+ <summary>
+ This method catches and suppresses all data-type errors detected by the find/replace operations
+ </summary>
+ <param name="sender"></param>
+ <param name="e"></param>
+</member>
+</members>
+</doc>

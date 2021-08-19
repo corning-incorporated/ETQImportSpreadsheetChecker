@@ -1,0 +1,12 @@
+﻿Public Class GlobalVar
+    Public Shared Property bc As BusinessCollection
+    Public Shared Property SelectedBusiness As String
+
+#Region "Constructor"
+    Public Sub New()
+        bc = New BusinessCollection
+        SelectedBusiness = Nothing
+    End Sub
+#End Region
+
+End Class

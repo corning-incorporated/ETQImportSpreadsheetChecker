@@ -1,0 +1,656 @@
+﻿Imports System.Collections.Generic
+Imports System.Data.OleDb
+Imports System.IO
+Imports Microsoft.Office.Interop
+
+Public Class frmMain
+
+#Region "Private Variables"
+    Private _dbCalls As New clsDatabaseCalls
+    Private _dbCallsReliance As New clsDatabaseCalls
+    Private _htRelianceFormFields As New Hashtable
+    Private _htRelianceUsersAndGroups As New Hashtable
+    Private _htRelianceCurrentLookupValues As New Hashtable
+    Private _errorCount As Integer = 0
+    'Private _htErrorLog As New Hashtable
+#End Region
+
+#Region "Private Methods/Functions"
+    Private Sub AppStartup()
+        txtExcelFile.Text = My.Settings.FileURL
+        If txtExcelFile.Text <> "" Then
+            btnImport.Enabled = True
+        End If
+
+        _dbCalls.ConnectionString = My.Settings.AppConnectionString
+        GetBusinesses()
+    End Sub
+
+    Private Sub AppShutdown()
+        My.Settings.FileURL = txtExcelFile.Text
+        My.Settings.Save()
+    End Sub
+
+    Private Sub GetBusinesses()
+        UpdateStatus("Refreshing list of Businesses...")
+
+
+        Dim dtBusiness As New DataTable
+        dtBusiness = _dbCalls.GetBusinesses()
+
+        With cboBusiness
+            .DataSource = dtBusiness
+            .DisplayMember = "BUSINESS_ID"
+            .ValueMember = "BUSINESS_ID"
+        End With
+
+        UpdateStatus("List of Businesses updated.")
+
+    End Sub
+
+    Private Sub GetEnvironments()
+        UpdateStatus("Refreshing list of Environments...")
+
+
+        Dim dtEnvironment As New DataTable
+        dtEnvironment = _dbCalls.GetEnvironments(cboBusiness.Text)
+
+        With cboEnvironment
+            .DataSource = dtEnvironment
+            .DisplayMember = "ENVIRONMENT_ID"
+        End With
+
+        UpdateStatus("List of Environments updated.")
+
+    End Sub
+
+    Private Sub GetDatabaseDetails()
+        UpdateStatus("Retrieving database details...")
+
+
+        Dim dtDatabaseDetails As New DataTable
+        dtDatabaseDetails = _dbCalls.GetDatabaseDetails(cboBusiness.Text, cboEnvironment.Text)
+
+        Dim dr As DataRow = dtDatabaseDetails(0)
+
+        txtDatabaseServer.Text = dr("SQL_SERVER")
+        txtDatabaseName.Text = dr("DATABASE_NAME")
+        txtDatabaseUser.Text = dr("SQL_USER")
+        txtDatabasePassword.Text = dr("SQL_PASSWORD")
+        txtDeployType.Text = dr("DEPLOY_TYPE")
+        txtAppServer.Text = dr("APP_SERVER")
+
+        'pnlDatabaseDetails.Visible = True
+        UpdateStatus("Database details updated.")
+
+    End Sub
+
+    Private Sub UpdateStatus(ByVal Message As String)
+        lblStatus.Text = String.Format("[{0}]  {1}", Date.Now, Message)
+        Application.DoEvents()
+    End Sub
+
+    Private Sub ImportExcelData()
+        UpdateStatus("Importing data from Excel...")
+
+        Dim Name As String = "Items"
+        Dim constr As String = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & txtExcelFile.Text & ";Extended Properties='Excel 12.0 XML;HDR=YES;';"
+        Dim con As New OleDbConnection(constr)
+
+        con.Open()
+
+        Dim dtSchema As DataTable = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, New Object() {Nothing, Nothing, Nothing, "TABLE"})
+        Dim drSchema As DataRow = dtSchema.Rows(0)
+        Dim strSheetName As String = drSchema("TABLE_NAME")
+        Dim cmd As New OleDbCommand("Select * From [" & strSheetName & "]", con)
+        cmd.Connection = con
+
+        Dim sda As New OleDbDataAdapter(cmd)
+        Dim dt As New DataTable
+        sda.Fill(dt)
+
+        'If dt.Rows.Count() > 0 Then
+        'For Each col As DataColumn In dt.Columns
+        'Console.WriteLine(col.ColumnName)
+        'Next
+        'End If
+
+        UpdateStatus("Binding Excel data to the grid...")
+
+        With dgvData
+            .DataSource = dt
+            .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+            .AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
+        End With
+
+        UpdateStatus(dt.Rows.Count & " records imported from Excel.")
+    End Sub
+
+    Private Function GetRelianceConnectionString()
+        Return String.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3}", txtDatabaseServer.Text, txtDatabaseName.Text, txtDatabaseUser.Text, txtDatabasePassword.Text)
+    End Function
+
+    Private Sub GetRelianceApplicationList()
+        UpdateStatus("Refreshing list of Applications...")
+
+        _dbCallsReliance.ConnectionString = GetRelianceConnectionString()
+
+        Dim dtApplications As New DataTable
+        dtApplications = _dbCallsReliance.GetRelianceApplications()
+
+        With cboApplication
+            .DataSource = Nothing
+            .Items.Clear()
+            .DataSource = dtApplications
+            .ValueMember = "APPLICATION_ID"
+            .DisplayMember = "DISPLAY_NAME"
+        End With
+
+        UpdateStatus("List of Applications updated.")
+    End Sub
+
+    Private Sub GetRelianceFormList()
+        UpdateStatus("Refreshing list of Forms...")
+
+        Dim dtForms As New DataTable
+        Dim appID As Integer
+        If IsNumeric(cboApplication.Text) Then
+            appID = cboApplication.Text
+        ElseIf IsNumeric(cboApplication.SelectedValue) Then
+            appID = cboApplication.SelectedValue
+        End If
+
+        If appID > 0 Then
+            dtForms = _dbCallsReliance.GetRelianceForms(appID)
+
+            With cboForm
+                .DataSource = Nothing
+                .Items.Clear()
+                .DataSource = dtForms
+                .ValueMember = "FORM_ID"
+                .DisplayMember = "DISPLAY_NAME"
+            End With
+        End If
+
+        UpdateStatus("List of Forms updated.")
+    End Sub
+
+    Private Sub GetRelianceSubformList()
+        UpdateStatus("Refreshing list of Subforms...")
+
+        Dim dtSubforms As New DataTable
+        Dim formID As Integer
+        If IsNumeric(cboForm.Text) Then
+            formID = cboForm.Text
+        ElseIf IsNumeric(cboForm.SelectedValue) Then
+            formID = cboForm.SelectedValue
+        End If
+
+        If formID > 0 Then
+            dtSubforms = _dbCallsReliance.GetRelianceSubforms(formID)
+
+            With cboSubform
+                .DataSource = Nothing
+                .Items.Clear()
+                .DataSource = dtSubforms
+                .ValueMember = "SUBFORM_ID"
+                .DisplayMember = "DISPLAY_NAME"
+            End With
+        End If
+
+        UpdateStatus("List of Subforms updated.")
+    End Sub
+
+    Private Sub GetRelianceFormFields()
+        UpdateStatus("Retrieving Form fields from Reliance...")
+
+        _htRelianceFormFields.Clear()
+        _htRelianceFormFields = New Hashtable
+
+        Dim formID As Integer
+        If IsNumeric(cboForm.Text) Then
+            formID = cboForm.Text
+        ElseIf IsNumeric(cboForm.SelectedValue) Then
+            formID = cboForm.SelectedValue
+        End If
+
+        If formID > 0 Then
+            Dim dtFormFields As New DataTable
+            dtFormFields = _dbCallsReliance.GetRelianceFormFields(formID)
+
+            If dtFormFields.Rows.Count > 0 Then
+                For Each dr As DataRow In dtFormFields.Rows
+                    '                    FIELD_NAME, FIELD_TYPE
+                    _htRelianceFormFields.Add(dr(0), dr(1))
+                Next
+            End If
+        End If
+
+        UpdateStatus("Form fields updated.")
+    End Sub
+
+    Private Sub GetRelianceSubformFields()
+        If cboForm.Text = "" Then
+            Exit Sub
+        End If
+
+        UpdateStatus("Retrieving Subform fields from Reliance...")
+
+        _htRelianceFormFields.Clear()
+        _htRelianceFormFields = New Hashtable
+
+        Dim subformID As Integer
+        If IsNumeric(cboSubform.Text) Then
+            subformID = cboSubform.Text
+        ElseIf IsNumeric(cboSubform.SelectedValue) Then
+            subformID = cboSubform.SelectedValue
+        End If
+
+        If subformID > 0 Then
+            Dim dtSubformFields As New DataTable
+            dtSubformFields = _dbCallsReliance.GetRelianceSubformFields(subformID)
+
+            If dtSubformFields.Rows.Count > 0 Then
+                For Each dr As DataRow In dtSubformFields.Rows
+                    '                    FIELD_NAME, FIELD_TYPE
+                    _htRelianceFormFields.Add(dr(0), dr(1))
+                Next
+            End If
+        End If
+
+        UpdateStatus("Subform fields updated.")
+    End Sub
+
+    Private Sub GetRelianceUsersAndGroups()
+        UpdateStatus("Import Reliance Users and Groups...")
+
+        _htRelianceUsersAndGroups.Clear()
+        _htRelianceUsersAndGroups = New Hashtable
+
+        Dim dtUsers As New DataTable
+        dtUsers = _dbCallsReliance.GetRelianceUsersAndGroups()
+
+        If dtUsers.Rows.Count() > 0 Then
+            For Each dr As DataRow In dtUsers.Rows
+                If Not _htRelianceUsersAndGroups.Contains(dr(0)) Then
+                    '                      DISPLAY_NAME, IS_GROUP
+                    _htRelianceUsersAndGroups.Add(dr(0), dr(0))
+                End If
+            Next
+
+            With dgvUsersGroups
+                .DataSource = Nothing
+                .DataSource = dtUsers
+                .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+            End With
+
+            UpdateStatus(dtUsers.Rows.Count & " User/Group records returned from Reliance.")
+        End If
+    End Sub
+
+    Private Sub ValidateExcelData()
+        '_htErrorLog.Clear()
+        '_htErrorLog = New Hashtable
+        dgvValidationIssues.Rows.Clear()
+        _errorCount = 0
+
+        ' reset the DataSource to default the cell styles
+        Dim ds = dgvData.DataSource
+        dgvData.DataSource = Nothing
+        dgvData.DataSource = ds
+
+        progProgress.Maximum = dgvData.Columns.GetColumnCount(DataGridViewElementStates.None)
+        progProgress.Style = ProgressBarStyle.Blocks
+        progProgress.Visible = True
+
+        For Each col As DataGridViewTextBoxColumn In dgvData.Columns
+            progProgress.Value = col.Index
+            Application.DoEvents()
+
+            Dim colName As String = col.Name
+            Dim colType As String = _htRelianceFormFields(colName)
+
+            UpdateStatus(String.Format("Evaluating data in the '{0}' column...", colName))
+
+            Select Case colType
+                Case "Dialog", "ComboBox", "ListBox"
+                    _htRelianceCurrentLookupValues.Clear()
+                    _htRelianceCurrentLookupValues = New Hashtable
+                    Dim dtValues As DataTable = _dbCallsReliance.GetLookupValues(colName)
+                    If dtValues.Rows.Count > 0 Then
+                        For Each dr As DataRow In dtValues.Rows
+                            If Not _htRelianceCurrentLookupValues.Contains(dr(1)) Then
+                                _htRelianceCurrentLookupValues.Add(dr(1), dr(1))
+                            End If
+                        Next
+                    End If
+            End Select
+
+            If colName.Contains("ETQ$") Then
+                ' System field
+                Select Case colName
+                    Case "ETQ$AUTHOR"
+                        ' validate user/group
+                        colType = "Names"
+                    Case "ETQ$ASSIGNED"
+                        ' validate user/group
+                        colType = "Names"
+                    Case "ETQ$NUMBER"
+                        ' skip column
+                        Continue For
+                    Case "ETQ$CREATED_DATE"
+                        ' skip column
+                        Continue For
+                    Case "ETQ$COMPLETED_DATE"
+                        ' skip column
+                        Continue For
+                    Case "ETQ$DUE_DATE"
+                        ' skip column
+                        Continue For
+                    Case "ETQ$REASON"
+                        ' skip column
+                        Continue For
+                    Case "ETQ$FILTER"
+                        ' skip column       **************
+                        Continue For
+                    Case "ETQ$APPROVERS"
+                        ' skip column
+                        Continue For
+                End Select
+            End If
+
+            If colType = "" Then
+                'Column not found in Reliance
+                MessageBox.Show(String.Format("'{0}' is not a valid field on the '{1}' form in the '{2}' application in Reliance.", colName, cboForm.Text, cboApplication.Text), "Import Spreadsheet Error")
+
+            Else
+                progProgressMinor.Maximum = dgvData.Rows.Count
+                progProgressMinor.Style = ProgressBarStyle.Blocks
+                progProgressMinor.Visible = True
+
+                For Each dr As DataGridViewRow In dgvData.Rows
+                    progProgressMinor.Value = dr.Index
+                    Application.DoEvents()
+
+                    If dr.Index = 0 Then
+                        ' skip the first record because it is used for instructions
+                        Continue For
+                    End If
+                    If Not IsDBNull(dr.Cells(colName).Value) Then
+                        Dim val As String = dr.Cells(colName).Value
+                        If val = Nothing Then
+                            ' skip validation if no value in cell
+                            Continue For
+                        End If
+                        Dim values As String() = val.Split(";")
+
+                        Select Case colType
+                            Case "Names"
+                                For Each val In values
+                                    If Not _htRelianceUsersAndGroups.Contains(val) Then
+                                        Dim issue As String = "Invalid User/Group " & PotentialIssue(val)
+                                        dgvData.Rows(dr.Index).Cells(colName).ErrorText = issue
+                                        dgvData.Rows(dr.Index).Cells(colName).Style.BackColor = Color.Yellow
+                                        AddValidationError(colName, dr.Index, colType, val, issue)
+                                    End If
+                                Next
+
+                            Case "Dialog", "ComboBox", "ListBox"
+                                For Each val In values
+                                    If Not _htRelianceCurrentLookupValues.Contains(val) Then
+                                        Dim issue As String = "Invalid value" & PotentialIssue(val)
+                                        dgvData.Rows(dr.Index).Cells(colName).ErrorText = issue
+                                        dgvData.Rows(dr.Index).Cells(colName).Style.BackColor = Color.Yellow
+                                        AddValidationError(colName, dr.Index, colType, val, issue)
+                                    End If
+                                Next
+
+                            Case "Attachment"
+                                If chkValidateAttachments.Checked Then
+                                    For Each val In values
+                                        If txtDeployType.Text = "On-Premise" Then
+                                            Dim filePath As String = String.Format("\\{0}\{1}", txtAppServer.Text, Trim(val.Replace(":", "$")))
+                                            If Not File.Exists(filePath) Then
+                                                Dim issue As String = "File not found (" & filePath & ")" & PotentialIssue(val)
+                                                dgvData.Rows(dr.Index).Cells(colName).ErrorText = issue
+                                                dgvData.Rows(dr.Index).Cells(colName).Style.BackColor = Color.Yellow
+                                                AddValidationError(colName, dr.Index, colType, val, issue)
+                                            End If
+                                        End If
+                                    Next
+                                End If
+                        End Select
+                    End If
+                Next
+
+                progProgressMinor.Visible = False
+            End If
+        Next
+
+        'ShowDataIssues()
+
+        With dgvValidationIssues
+            .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+            .AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
+            .Sort(dgvValidationIssues.Columns("RecordNumber"), System.ComponentModel.ListSortDirection.Ascending)
+        End With
+
+        UpdateStatus(String.Format("Data validation complete. {0} validation issue(s) detected.", _errorCount.ToString("N0")))
+        progProgress.Visible = False
+    End Sub
+
+    'Private Sub AddError(ByVal RowIndex As Integer, ByVal ColumnName As String, ByVal ErrorText As String)
+    '    Dim key As String = String.Format("{0};{1}", RowIndex, ColumnName)
+    '    If Not _htErrorLog.Contains(key) Then
+    '        _htErrorLog.Add(key, ErrorText)
+    '    End If
+    'End Sub
+
+    'Private Sub ShowDataIssues()
+    '    UpdateStatus("Highlighting data issues in grid...")
+
+    '    For Each issue As DictionaryEntry In _htErrorLog
+    '        Dim key As String() = issue.Key.ToString.Split(";")
+
+    '        dgvData.Rows(key(0)).Cells(key(1)).ErrorText = issue.Value
+    '        dgvData.Rows(key(0)).Cells(key(1)).Style.BackColor = Color.Yellow
+    '    Next
+    'End Sub
+
+    Private Function PotentialIssue(ByVal FieldValue As String) As String
+        Dim issue As String = ""
+        If FieldValue.Length > 0 Then
+            Dim firstChar As Char = FieldValue.Substring(0, 1)
+            If firstChar = " " Then
+                issue = " - Leading blank space"
+            End If
+
+            Dim lastChar As Char = FieldValue(FieldValue.Length - 1)
+            If lastChar = " " Then
+                issue += " - Trailing blank space"
+            End If
+
+            If FieldValue.Contains("\n") Then
+                issue += " - Field contains line break"
+            End If
+        End If
+
+        Return issue
+    End Function
+
+    Private Sub AddValidationError(ByVal ColumnName As String, ByVal RecordNumber As Integer, ByVal FieldType As String, ByVal RecordValue As String, Optional ValueIssue As String = "")
+        _errorCount += 1
+
+        Dim newRowIndex As Integer = dgvValidationIssues.Rows.Add
+        Dim newRow As DataGridViewRow = dgvValidationIssues.Rows(newRowIndex)
+        newRow.Cells(0).Value = ColumnName
+        newRow.Cells(1).Value = RecordNumber
+        newRow.Cells(2).Value = FieldType
+        newRow.Cells(3).Value = RecordValue
+        newRow.Cells(4).Value = ValueIssue
+
+        'AddError(RecordNumber, ColumnName, ValueIssue)
+    End Sub
+
+    Private Sub ExportDataGridViewToExcel(ByVal dgv As DataGridView)
+        If dgv.RowCount = 0 Then
+            MessageBox.Show("No data to export.", "No Data", MessageBoxButtons.OK, MessageBoxIcon.[Stop])
+            Return
+        End If
+
+        Dim fd As SaveFileDialog = New SaveFileDialog()
+        fd.OverwritePrompt = False
+        fd.FileName = Path.GetFileName(txtExcelFile.Text)
+        fd.Filter = "Excel (*.xls) |*.xls;*.xlsx"
+
+        If fd.ShowDialog() = DialogResult.OK Then
+            UpdateStatus("Exporting data to Excel...")
+            Dim xlApp As Excel._Application = New Microsoft.Office.Interop.Excel.Application()
+            Dim xlWB As Excel._Workbook = xlApp.Workbooks.Add()
+            Dim xlWS As Excel._Worksheet = CType(xlWB.Worksheets(1), Excel._Worksheet)
+
+            Try
+                progProgress.Visible = True
+                progProgress.Style = ProgressBarStyle.Blocks
+                progProgress.Maximum = dgv.RowCount - 1
+
+                For c As Integer = 0 To dgv.ColumnCount - 1
+                    xlWS.Cells(1, c + 1) = dgv.Columns(c).HeaderText
+                Next
+
+                Dim rng As Excel.Range = CType(xlWS.Rows(1), Excel.Range)
+                rng.EntireRow.Font.Bold = True
+                rng.EntireRow.Font.Underline = True
+                xlApp.ActiveWindow.SplitRow = 1
+                xlApp.ActiveWindow.FreezePanes = True
+
+                For r As Integer = 0 To dgv.RowCount - 1
+                    Application.DoEvents()
+                    progProgress.Value = r
+
+                    For c As Integer = 0 To dgv.ColumnCount - 1
+                        xlWS.Cells(r + 2, c + 1) = dgv(c, r).Value
+                    Next
+                Next
+
+                xlWS.Columns.AutoFit()
+                xlWB.SaveAs(fd.FileName)
+                progProgress.Visible = False
+                xlWB.Close()
+                xlWS = Nothing
+                xlWB = Nothing
+                xlApp.Quit()
+                fd = Nothing
+                MessageBox.Show("Excel Workbook Created Successfully", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                UpdateStatus("Export to Excel complete!")
+            Catch ex As Exception
+                xlWB.SaveAs(fd.FileName)
+                xlApp.Quit()
+                progProgress.Value = progProgress.Maximum
+                MessageBox.Show("Error exporting data to Excel." & vbCrLf + ex.Message, "Export error", MessageBoxButtons.OK, MessageBoxIcon.[Error])
+                UpdateStatus("Error exporting data to Excel.")
+                progProgress.Visible = False
+            End Try
+        End If
+    End Sub
+#End Region
+
+
+#Region "Event Handlers"
+    ' +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    Private Sub frmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        AppStartup()
+    End Sub
+
+    Private Sub frmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        AppShutdown()
+    End Sub
+
+    Private Sub cboBusiness_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboBusiness.SelectedIndexChanged
+        If cboBusiness.Text <> "" Then
+            GetEnvironments()
+        End If
+    End Sub
+
+
+    Private Sub cboEnvironment_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboEnvironment.SelectedIndexChanged
+        If cboBusiness.Text <> "" And cboEnvironment.Text <> "" Then
+            GetDatabaseDetails()
+            GetRelianceApplicationList()
+        End If
+    End Sub
+
+    Private Sub btnExcelFile_Click(sender As Object, e As EventArgs) Handles btnExcelFile.Click
+        Dim ofd As New OpenFileDialog()
+        ofd.Title = "Please select Excel template file..."
+        ofd.Filter = "Excel Files (*.xls, *.xlsx, *.xlsm)|*.xls;*.xlsx;*.xlsm"
+        ofd.Multiselect = False
+
+        If ofd.ShowDialog = System.Windows.Forms.DialogResult.OK Then
+            txtExcelFile.Text = ofd.FileName.ToString
+            btnImport.Enabled = True
+        End If
+    End Sub
+
+    Private Sub cboApplication_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboApplication.SelectedIndexChanged
+        GetRelianceFormList()
+    End Sub
+
+    Private Sub cboForm_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboForm.SelectedIndexChanged
+        GetRelianceFormFields()
+
+        If cboSubform.Enabled Then
+            GetRelianceSubformList()
+        End If
+    End Sub
+
+    Private Sub btnImport_Click(sender As Object, e As EventArgs) Handles btnImport.Click
+        ImportExcelData()
+        btnValidate.Enabled = True
+    End Sub
+
+    Private Sub chkSubform_CheckedChanged(sender As Object, e As EventArgs) Handles chkSubform.CheckedChanged
+        cboSubform.Enabled = chkSubform.Checked
+        If cboSubform.Enabled Then
+            GetRelianceSubformList()
+        Else
+            cboSubform.DataSource = Nothing
+            GetRelianceFormFields()
+        End If
+    End Sub
+
+    Private Sub cboSubform_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboSubform.SelectedIndexChanged
+        GetRelianceSubformFields()
+    End Sub
+
+    Private Sub btnExportToExcel_Click(sender As Object, e As EventArgs) Handles btnExportToExcel.Click
+
+        If tabTabControl.SelectedTab Is tabExcelData Then
+            ExportDataGridViewToExcel(dgvData)
+        ElseIf tabTabControl.SelectedTab Is tabUsersGroups Then
+            ExportDataGridViewToExcel(dgvUsersGroups)
+        Else
+            ExportDataGridViewToExcel(dgvValidationIssues)
+        End If
+
+    End Sub
+
+    Private Sub btnValidate_Click(sender As Object, e As EventArgs) Handles btnValidate.Click
+        GetRelianceUsersAndGroups()
+        ValidateExcelData()
+
+        btnExportToExcel.Enabled = True
+    End Sub
+
+    Private Sub dgvValidationIssues_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvValidationIssues.CellDoubleClick
+        Dim dr As DataGridViewRow = dgvValidationIssues.Rows(e.RowIndex)
+        Dim dataRow As Integer = dr.Cells("RecordNumber").Value
+        Dim dataColumn As String = dr.Cells("ColumnName").Value
+
+        dgvData.ClearSelection()
+        dgvData.Rows(dataRow).Cells(dataColumn).Selected = True
+        dgvData.CurrentCell = dgvData.Item(dataColumn, dataRow)
+        tabTabControl.SelectedTab = tabExcelData
+    End Sub
+    #End Region
+End Class
