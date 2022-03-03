@@ -4,3 +4,5 @@ This application was developed in conjunction with multiple deployments of the E
 This is not a big deal if there are only a handful of errors in the file, but can make the import process very time consuming and frustrating if the admin needs to continuously go back-and-forth between correcting the spreadsheet and attempting the import time and time again.
 
 This Import Spreadsheet Checker application performs a full validation of the import spreadsheet, comparing against the Reliance system (SQL database tables). The program will highlight and report all data-issues detected in the file and provide a fast interface to update and re-validate the values prior to attempting the actual import into Reliance.
+
+If you would like to contribute to the solution, you will need to sign and submit the Contributor License Agreement (CLA) to Tom Gee (geetc@corning.com).  The CLA document can be found inside the CLA directory in the root folder.
